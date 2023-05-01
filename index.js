@@ -63,8 +63,7 @@ function toString(num, decimal = 2) {
 }
 
 function round(num, decimal = 2) {
-    const tenPow = Math.pow(10, decimal);
-    return Math.round(num * tenPow) / tenPow;
+    return num.toPrecision(decimal);
 }
 
 function toNumber(numberString) {
@@ -74,7 +73,7 @@ function toNumber(numberString) {
 $('#yen').on('input', e => {
     e.stopPropagation();
     const { dolar, peso } = fromYen(toNumber($('#yen').val()));
-    $('#dolar').val(toString(dolar, 5) || 0);
+    $('#dolar').val(toString(dolar, 3) || 0);
     $('#peso').val(toString(peso) || 0);
 });
 
@@ -84,11 +83,13 @@ $('#dolar').on('input', e => {
     $('#yen').val(toString(yen) || 0);
     $('#peso').val(toString(peso) || 0);
 });
+
 Inputmask("decimal", {
     alias: 'currency',
     radixPoint: '.',
     groupSeparator: ',',
     inputtype: "text",
-    unmaskAsNumber:true
+    unmaskAsNumber: true
 }).mask("input.num");
+
 update();
