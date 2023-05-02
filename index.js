@@ -1,9 +1,16 @@
 let cotizacionPesoDolar = 1;
+let cotizacionPesoDolarMep = 1;
 let cotizacionDolarYen = 1;
 
 function updateCotizacionDolar() {
-    return $.getJSON('https://mercados.ambito.com//dolarturista/variacion').then(data => {
+    return $.getJSON('https://mercados.ambito.com/dolarturista/variacion').then(data => {
         cotizacionPesoDolar = parseFloat(data.venta.replace(',', '.'));
+    });
+}
+
+function updateCotizacionDolarMep() {
+    return $.getJSON('https://mercados.ambito.com/dolarrava/mep/variacion').then(data => {
+        cotizacionPesoDolarMep = parseFloat(data.venta.replace(',', '.'));
     });
 }
 
@@ -32,9 +39,10 @@ function updateCotizacionYen() {
 }
 
 function update() {
-    Promise.all([updateCotizacionDolar(), updateCotizacionYen()]).then(() => {
+    Promise.all([updateCotizacionDolar(), updateCotizacionDolarMep(), updateCotizacionYen()]).then(() => {
         $('#actualizacion').val(new Date().toLocaleString('es'));
         $('#pesoDolar').val(toString(cotizacionPesoDolar, 5));
+        $('#pesoDolarMep').val(toString(cotizacionPesoDolarMep, 5));
         $('#dolarYen').val(toString(cotizacionDolarYen, 5));
         $('#yen').trigger('input');
     });
@@ -44,7 +52,8 @@ function fromYen(yenValue) {
 
     return {
         dolar: yenValue * cotizacionDolarYen,
-        peso: yenValue * cotizacionDolarYen * cotizacionPesoDolar
+        peso: yenValue * cotizacionDolarYen * cotizacionPesoDolar,
+        pesoMep: yenValue * cotizacionDolarYen * cotizacionPesoDolarMep
     };
 
 }
@@ -53,7 +62,8 @@ function fromDolar(dolarValue) {
 
     return {
         yen: dolarValue / cotizacionDolarYen,
-        peso: dolarValue * cotizacionPesoDolar
+        peso: dolarValue * cotizacionPesoDolar,
+        pesoMep: dolarValue * cotizacionPesoDolarMep
     };
 }
 
@@ -72,16 +82,18 @@ function toNumber(numberString) {
 
 $('#yen').on('input', e => {
     e.stopPropagation();
-    const { dolar, peso } = fromYen(toNumber($('#yen').val()));
+    const { dolar, peso, pesoMep } = fromYen(toNumber($('#yen').val()));
     $('#dolar').val(toString(dolar, 3) || 0);
     $('#peso').val(toString(peso) || 0);
+    $('#pesoMep').val(toString(pesoMep) || 0);
 });
 
 $('#dolar').on('input', e => {
     e.stopPropagation();
-    const { yen, peso } = fromDolar(toNumber($('#dolar').val()));
+    const { yen, peso, pesoMep } = fromDolar(toNumber($('#dolar').val()));
     $('#yen').val(toString(yen) || 0);
     $('#peso').val(toString(peso) || 0);
+    $('#pesoMep').val(toString(pesoMep) || 0);
 });
 
 Inputmask("decimal", {
