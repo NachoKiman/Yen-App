@@ -3,13 +3,13 @@ let cotizacionPesoDolarMep = 1;
 let cotizacionDolarYen = 1;
 
 function updateCotizacionDolar() {
-    return $.getJSON('https://mercados.ambito.com//dolarturista/variacion').then(data => {
+    return $.getJSON('https://mercados.ambito.com/dolarturista/variacion').then(data => {
         cotizacionPesoDolar = parseFloat(data.venta.replace(',', '.'));
     });
 }
 
 function updateCotizacionDolarMep() {
-    return $.getJSON('https://mercados.ambito.com///dolarrava/mep/variacion').then(data => {
+    return $.getJSON('https://mercados.ambito.com/dolarrava/mep/variacion').then(data => {
         cotizacionPesoDolarMep = parseFloat(data.venta.replace(',', '.'));
     });
 }
